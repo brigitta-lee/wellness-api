@@ -11,7 +11,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 var router = express.Router();
-
+// var googleMapsClient = require('@google/maps').createClient({
+// key: 'AIzaSyDiIK5Y8YpXKY5_aVv5noyqmPRspT160JE'
 
 
 // app.use(express.static('src/api.js'));
@@ -34,26 +35,24 @@ router.get('/',function(req, res) {
   res.json({ message: "Hello, welcome to our api!"})
 })
 
-router.route('/places')
+router.route('/map')
 
   .get(function(req, res) {
-    // req.pipe(request
-    // let type="pharmacy";
-    let url=
-    "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=46.878178,-114.001003&radius=5000&key=AIzaSyDiIK5Y8YpXKY5_aVv5noyqmPRspT160JE&type=pharmacy";
-    req.pipe(request(url)).pipe(res);
-    // request("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=46.878178,-114.001003&radius=5000&type=pharmacy&key=AIzaSyDiIK5Y8YpXKY5_aVv5noyqmPRspT160JE", function (error, response, body) {
-    //     console.log(error); // Print the error if one occurred
-    //     console.log(response.statusCode); // Print the response status code if a response was received
-    //     console.log(JSON.parse(body));
 
-        // res.json(response);
-        // res.send(response);
+    let url=
+    "https://maps.googleapis.com/maps/api/js?key=AIzaSyDiIK5Y8YpXKY5_aVv5noyqmPRspT160JE&callback=initMap"
+
+    req.pipe(request(url)).pipe(res);
   });
 
-// })
-  //   'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=46.878178,-114.001003&radius=5000&type=pharmacy&key=AIzaSyDiIK5Y8YpXKY5_aVv5noyqmPRspT160JE',result => res.json(result));
-  // })
+  router.route('/places/:type')
+
+    .get(function(req, res) {
+      let baseUrl=
+      "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=46.878178,-114.001003&radius=5000&key=AIzaSyDiIK5Y8YpXKY5_aVv5noyqmPRspT160JE&type="+req.params.type;
+      req.pipe(request(baseUrl)).pipe(res);
+    });
+
 
 app.use('/api', router);
 app.listen(3003,()=>console.log("Listening on port 3003"));
