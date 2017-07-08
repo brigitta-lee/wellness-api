@@ -1,12 +1,16 @@
 {
   "name": "women-wellness-app",
   "version": "1.0.0",
+  "engines": {
+    "node": "7.7.4"
+  },
   "description": "",
   "main": "webpack.config.client.js",
   "scripts": {
     "dev:client": "webpack --config webpack.config.client.js --watch",
     "dev:server": "webpack --config webpack.config.server.js --watch",
-    "dev:start": "nodemon dist/api.js --watch dist/api.js"
+    "dev:start": "nodemon dist/api.js --watch dist/api.js",
+    "start": "node dist/api.js"
   },
   "author": "",
   "license": "ISC",

@@ -11,15 +11,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 var router = express.Router();
-// var googleMapsClient = require('@google/maps').createClient({
-// key: 'AIzaSyDiIK5Y8YpXKY5_aVv5noyqmPRspT160JE'
 
-
-// app.use(express.static('src/api.js'));
-//
-// app.get('/',(req, res) =>{
-//   res.sendFile('index.html');
-// });
 app.use(function(req,res,next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
