@@ -7809,13 +7809,17 @@ module.exports = {
 var buffer = __webpack_require__(58)
 var Buffer = buffer.Buffer
 
+// alternative to using Object.keys for old browsers
+function copyProps (src, dst) {
+  for (var key in src) {
+    dst[key] = src[key]
+  }
+}
 if (Buffer.from && Buffer.alloc && Buffer.allocUnsafe && Buffer.allocUnsafeSlow) {
   module.exports = buffer
 } else {
   // Copy properties from require('buffer')
-  Object.keys(buffer).forEach(function (prop) {
-    exports[prop] = buffer[prop]
-  })
+  copyProps(buffer, exports)
   exports.Buffer = SafeBuffer
 }
 
@@ -7824,9 +7828,7 @@ function SafeBuffer (arg, encodingOrOffset, length) {
 }
 
 // Copy static methods from Buffer
-Object.keys(Buffer).forEach(function (prop) {
-  SafeBuffer[prop] = Buffer[prop]
-})
+copyProps(Buffer, SafeBuffer)
 
 SafeBuffer.from = function (arg, encodingOrOffset, length) {
   if (typeof arg === 'number') {
@@ -24516,6 +24518,17 @@ function RedirectableRequest(options, responseCallback) {
 		self._processResponse(response);
 	};
 
+	// Complete the URL object when necessary
+	if (!options.pathname && options.path) {
+		var searchPos = options.path.indexOf('?');
+		if (searchPos < 0) {
+			options.pathname = options.path;
+		} else {
+			options.pathname = options.path.substring(0, searchPos);
+			options.search = options.path.substring(searchPos);
+		}
+	}
+
 	// Perform the first request
 	this._performRequest();
 }
@@ -24531,7 +24544,7 @@ RedirectableRequest.prototype._performRequest = function () {
 	}
 
 	// Create the native request
-	var nativeProtocol = nativeProtocols[this._options.protocol];
+	var nativeProtocol = nativeProtocols[protocol];
 	var request = this._currentRequest =
 				nativeProtocol.request(this._options, this._onNativeResponse);
 	this._currentUrl = url.format(this._options);
@@ -24656,7 +24669,7 @@ RedirectableRequest.prototype.setTimeout = function (timeout, callback) {
 };
 
 // Writes buffered data to the current native request
-RedirectableRequest.prototype._write = function (data, encoding, callback) {
+RedirectableRequest.prototype.write = function (data, encoding, callback) {
 	this._currentRequest.write(data, encoding, callback);
 	this._bufferedWrites.push({data: data, encoding: encoding});
 };
@@ -37163,7 +37176,7 @@ router.route('/places/:type').get(function (req, res) {
 });
 
 app.use('/api', router);
-app.listen(3003, () => console.log("Listening on port 3003"));
+app.listen(process.env.PORT || 5000, () => console.log("Listening on port 3003"));
 
 /***/ }),
 /* 211 */
